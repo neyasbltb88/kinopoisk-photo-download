@@ -37,9 +37,16 @@ export default class PhotoDownload {
         }
     }
 
-    async startLoader() {
+    startLoader() {
+        this.breadcrumbs.setState(true);
+        this.breadcrumbs.setAmount('(0)');
+
+        this.loaderLoop();
+    }
+
+    async loaderLoop() {
         if (this.loaded < this.wallpapers.length) {
-            this.breadcrumbs.setState(true);
+
             try {
                 let url = this.wallpapers[this.loaded].image;
                 let img = await fetch(url).then(res => res.blob());
@@ -55,7 +62,7 @@ export default class PhotoDownload {
             // Все скачены
         }
 
-        requestAnimationFrame(this.startLoader());
+        requestAnimationFrame(async() => await this.loaderLoop());
     }
 
     url2name(url) {
